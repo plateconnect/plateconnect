@@ -15,7 +15,7 @@ model.multi_label = False  # NMS multiple labels per box
 model.max_det = 1000  # maximum number of detections per image
 
 # set image
-img = 'license.png'
+img = 'main-qimg-dc45532d45e1d8733b3b8bc8f62e8385-lq.jpeg'
 
 image_data = cv2.imread(img)
 # perform inference
@@ -33,10 +33,11 @@ boxes = predictions[:, :4] # x1, y1, x2, y2
 
 for plate_coords in boxes:
     x1, y1, x2, y2 = map(int, plate_coords)
-    # image[start_x:end_x, start_y:end_y]
-    # image[x1:x2, y1:y2]
-    cropped_image = image_data[x1:(x2-x1), y1:(y1-y2)]
-    cv2.imwrite("cropped1.png", cropped_image)
+    cropped_image = image_data[y1:y2, x1:x2]
+    import math
+    name = "cropped" + str(math.floor(x1)) + ".png"
+    cv2.imwrite(name, cropped_image)
+    
 
 scores = predictions[:, 4]
 categories = predictions[:, 5]
