@@ -37,7 +37,11 @@ for plate_coords in boxes:
     import math
     name = "cropped" + str(math.floor(x1)) + ".png"
     cv2.imwrite(name, cropped_image)
-    
+
+    # Adding custom options
+    custom_config = r'--oem 3 --psm 6'
+    plate_number = pytesseract.image_to_string(name, config=custom_config)
+    print(plate_number)
 
 scores = predictions[:, 4]
 categories = predictions[:, 5]
