@@ -3,7 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 def find_user_license_plate(plate_num: str) -> str:
-    # returns a user id given a license plate number
+    # returns ward ids given a license plate number
     cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(cred)
     db = firestore.client()
@@ -11,8 +11,31 @@ def find_user_license_plate(plate_num: str) -> str:
     docs = users_ref.stream()
     for doc in docs:
         data = doc.to_dict()
-        if data["license_plate"] == plate_num:
-            return data["user_id"]
+        license_plates = data["license_plates"]
+
+        for plate in license_plates:
+            if plate == plate_num:
+                ward_ids = data["ward_ids"]
+
+                for _id in ward_ids:
+                    print(get_student_name(_id))
+                    pass
+    return None
+
+
+def get_student_name(ward_id: str) -> str:
+    # returns student names given a ward id
+    cred = credentials.Certificate("serviceAccountKey.json")
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    users_ref = db.collection(u'users')
+    docs = users_ref.stream()
+    for doc in docs:
+        data = doc.to_dict()
+        ward_ids = data["ward_ids"]
+        for _id in ward_ids:
+            if _id == ward_id:
+                return data["name"]
     return None
 
 def send_push_notification(plate_num: str):
